@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFA – Test Espacial (Desplazamiento)</title>
+<style>
+  /* ── Design tokens ─────────────────────────────────────── */
+  :root {
+    --bg:        #0F1117;
+    --surface:   #1A1D27;
+    --border:    #2A2D3E;
+    --accent:    #5B8CFF;
+    --accent-lt: #8FB3FF;
+    --correct:   #3DDC84;
+    --wrong:     #FF6B6B;
+    --text:      #E8ECF5;
+    --muted:     #7A7F9A;
+    --radius:    12px;
+    --mono:      'JetBrains Mono', 'Courier New', monospace;
+    --sans:      'Inter', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Header ────────────────────────────────────────────── */
+  header {
+    width: 100%;
+    max-width: 860px;
+    padding: 28px 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo-badge {
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: .02em;
+  }
+
+  /* ── Progress bar ──────────────────────────────────────── */
+  .progress-wrap {
+    width: 100%;
+    max-width: 860px;
+    padding: 20px 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .progress-bar-bg {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  /* ── Timer ─────────────────────────────────────────────── */
+  .timer-wrap {
+    width: 100%;
+    max-width: 860px;
+    padding: 12px 24px 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .timer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--accent-lt);
+    letter-spacing: .08em;
+  }
+  .timer.urgent { color: var(--wrong); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* ── Card ──────────────────────────────────────────────── */
+  .card {
+    width: 100%;
+    max-width: 860px;
+    margin: 20px 24px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    position: relative;
+  }
+
+  /* screen variants */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── Instructions screen ───────────────────────────────── */
+  .instr-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--accent-lt);
+  }
+  .instr-body {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 640px;
+  }
+  .instr-body strong { color: var(--text); }
+  .example-box {
+    margin: 24px 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .example-box p { margin-bottom: 8px; }
+  .example-box .ex-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: .1em;
+  }
+  .arrow { color: var(--accent); font-size: 18px; }
+
+  /* ── Question screen ───────────────────────────────────── */
+  .q-number {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .figure-area {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .fig-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .fig-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .fig-svg { width: 80px; height: 80px; }
+  .fig-sep { color: var(--muted); font-size: 24px; align-self: center; }
+
+  /* ── Options ───────────────────────────────────────────── */
+  .options-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .opt-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    min-width: 90px;
+    flex: 1;
+    max-width: 140px;
+  }
+  .opt-btn:hover { border-color: var(--accent); background: #1A1D27; }
+  .opt-btn.selected { border-color: var(--accent); background: rgba(91,140,255,.12); }
+  .opt-btn.correct  { border-color: var(--correct); background: rgba(61,220,132,.1); }
+  .opt-btn.wrong    { border-color: var(--wrong);   background: rgba(255,107,107,.1); }
+  .opt-letter {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-lt);
+  }
+  .opt-svg { width: 60px; height: 60px; }
+
+  /* ── Nav buttons ───────────────────────────────────────── */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+    letter-spacing: .02em;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .btn-skip { background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer;
+              text-decoration: underline; padding: 10px 0; }
+  .btn-skip:hover { color: var(--text); }
+
+  /* ── Results screen ────────────────────────────────────── */
+  .results-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent-lt);
+    margin-bottom: 8px;
+  }
+  .results-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .score-big {
+    font-family: var(--mono);
+    font-size: 72px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-label { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num { font-family: var(--mono); font-size: 28px; font-weight: 700; }
+  .stat-txt { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .stat-box.green .stat-num { color: var(--correct); }
+  .stat-box.red   .stat-num { color: var(--wrong); }
+  .stat-box.blue  .stat-num { color: var(--accent-lt); }
+
+  /* ── Footer ────────────────────────────────────────────── */
+  footer {
+    padding: 32px 24px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    font-family: var(--mono);
+    letter-spacing: .04em;
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 20px; margin: 16px 12px 0; }
+    .figure-area { gap: 16px; }
+    .options-grid { gap: 8px; }
+    .opt-btn { min-width: 70px; padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo-badge">BFA</span>
+  <h1>Batería Factorial de Aptitudes — Test Espacial</h1>
+</header>
+
+<!-- ── PROGRESS ──────────────────────────────────────────────── -->
+<div class="progress-wrap" id="progressWrap" style="display:none">
+  <div class="progress-meta">
+    <span id="progressText">Pregunta 1 de 20</span>
+    <span id="answeredText">0 respondidas</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="timer-wrap" id="timerWrap" style="display:none">
+  <div class="timer" id="timer">5:00</div>
+</div>
+
+<!-- ── SCREENS ──────────────────────────────────────────────── -->
+<div class="card">
+
+  <!-- INSTRUCTIONS -->
+  <div class="screen active" id="screenInstr">
+    <div class="instr-title">Instrucciones</div>
+    <div class="instr-body">
+      <p>Las dos figuras de abajo son iguales pero han sido colocadas en diferente posición.
+         Si fuera posible <strong>desplazarlas o girarlas</strong> en el plano horizontal del papel,
+         la de la derecha podría deslizarse sobre la de la izquierda y <strong>coincidirían exactamente</strong>.</p>
+      <div class="example-box">
+        <p>Ejemplo correcto (figuras iguales, una girada):</p>
+        <div class="ex-row">
+          <svg viewBox="0 0 40 40" width="50" fill="none" stroke="#5B8CFF" stroke-width="2.5">
+            <polygon points="20,4 36,36 4,36"/>
+          </svg>
+          <span class="arrow">≡</span>
+          <svg viewBox="0 0 40 40" width="50" fill="none" stroke="#5B8CFF" stroke-width="2.5" transform="rotate(60)">
+            <polygon points="20,36 4,4 36,4"/>
+          </svg>
+        </div>
+        <p style="margin-top:14px">Ejemplo diferente (figura <strong>invertida</strong>, no coincide):</p>
+        <div class="ex-row">
+          <svg viewBox="0 0 40 40" width="50" fill="none" stroke="#FF6B6B" stroke-width="2.5">
+            <path d="M8,8 L32,8 L32,28 L20,36 Z"/>
+          </svg>
+          <span class="arrow">≠</span>
+          <svg viewBox="0 0 40 40" width="50" fill="none" stroke="#FF6B6B" stroke-width="2.5">
+            <path d="M32,8 L8,8 L8,28 L20,36 Z"/>
+          </svg>
+        </div>
+      </div>
+      <p>En cada ejercicio encontrará <strong>5 opciones (A–E)</strong>. Selecciona la(s) figura(s) que,
+         al desplazarse o girarse sobre sí mismas en el plano del papel, <strong>recubren exactamente</strong>
+         la figura modelo.</p>
+      <p style="margin-top:12px">Dispondrás de <strong>5 minutos</strong>. Trabaja lo más rápido posible.</p>
+    </div>
+    <div style="margin-top:28px">
+      <button class="btn btn-primary" onclick="startTest()">Comenzar prueba</button>
+    </div>
+  </div>
+
+  <!-- QUESTION -->
+  <div class="screen" id="screenQ">
+    <div class="q-number" id="qLabel">Ítem 30</div>
+    <div class="figure-area" id="figureArea">
+      <!-- populated by JS -->
+    </div>
+    <div class="options-grid" id="optionsGrid">
+      <!-- populated by JS -->
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" id="prevBtn" onclick="navigate(-1)">← Anterior</button>
+      <button class="btn-skip" onclick="navigate(1)">Omitir →</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="navigate(1)">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screenResult">
+    <div class="results-title">Prueba finalizada</div>
+    <div class="results-sub">Test Espacial – Desplazamiento | BFA</div>
+    <div class="score-big" id="scoreBig">—</div>
+    <div class="score-label" id="scoreLabel"></div>
+    <div class="stats-grid">
+      <div class="stat-box green"><div class="stat-num" id="rCorrect">0</div><div class="stat-txt">Correctas</div></div>
+      <div class="stat-box red">  <div class="stat-num" id="rWrong">0</div>  <div class="stat-txt">Incorrectas</div></div>
+      <div class="stat-box blue"> <div class="stat-num" id="rOmit">0</div>   <div class="stat-txt">Omitidas</div></div>
+      <div class="stat-box blue"> <div class="stat-num" id="rTime">—</div>   <div class="stat-txt">Tiempo</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="resetTest()">Reiniciar prueba</button>
+  </div>
+
+</div>
+
+<footer>Sistema BFA · Módulo Test Espacial · v1.0</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA: 20 items (30-49) con figuras SVG parametrizadas.
+// correct: array de letras correctas (puede ser más de una).
+// ─────────────────────────────────────────────────────────────
+
+function tri(cx,cy,r,rot=0){
+  const pts=[];
+  for(let i=0;i<3;i++){
+    const a=(rot+i*120)*Math.PI/180;
+    pts.push(`${(cx+r*Math.sin(a)).toFixed(1)},${(cy-r*Math.cos(a)).toFixed(1)}`);
+  }
+  return `<polygon points="${pts.join(' ')}" fill="none" stroke="currentColor" stroke-width="2.5"/>`;
+}
+function rect(x,y,w,h,rot=0){
+  const cx=x+w/2, cy=y+h/2;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="currentColor" stroke-width="2.5" transform="rotate(${rot},${cx},${cy})"/>`;
+}
+function arrow(dir='right'){
+  const paths={
+    right:'M10,20 L30,20 M22,12 L30,20 L22,28',
+    left: 'M30,20 L10,20 M18,12 L10,20 L18,28',
+    up:   'M20,30 L20,10 M12,18 L20,10 L28,18',
+    down: 'M20,10 L20,30 M12,22 L20,30 L28,22',
+  };
+  return `<path d="${paths[dir]||paths.right}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>`;
+}
+function cross(){
+  return `<path d="M12,12 L28,28 M28,12 L12,28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>`;
+}
+function circle(cx,cy,r){
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="currentColor" stroke-width="2.5"/>`;
+}
+function chevron(dir='right'){
+  const d={
+    right:'M12,10 L28,20 L12,30',
+    left: 'M28,10 L12,20 L28,30',
+    double:'M8,10 L18,20 L8,30 M20,10 L30,20 L20,30',
+  };
+  return `<path d="${d[dir]||d.right}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+function lshape(flip=false){
+  return flip
+    ? `<path d="M28,8 L28,32 L12,32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<path d="M12,8 L12,32 L28,32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
+const svg=(body)=>`<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+
+// Shape generators per item: [modelFn, [optAFn, optBFn, optCFn, optDFn, optEFn]]
+// correct = letters that match (rotation/displacement of model)
+const ITEMS = [
+  // 30
+  { id:30, correct:['A','C'],
+    model: svg(tri(20,20,14)),
+    opts: [svg(tri(20,20,14,180)), svg(tri(20,20,14,60)+''+circle(32,8,4)), svg(tri(20,20,14,120)), svg(tri(20,20,14)), svg(tri(20,20,14,60))] },
+  // 31
+  { id:31, correct:['B','D'],
+    model: svg(rect(10,10,20,20)),
+    opts: [svg(rect(10,10,20,20,45)), svg(rect(10,10,20,20)), svg(rect(10,10,20,20,30)), svg(rect(10,10,20,20,90)), svg(rect(10,10,20,20,60))] },
+  // 32
+  { id:32, correct:['A','E'],
+    model: svg(arrow('right')),
+    opts: [svg(arrow('right')), svg(arrow('down')), svg(arrow('left')), svg(arrow('up')), svg(arrow('right'))] },
+  // 33
+  { id:33, correct:['C'],
+    model: svg(lshape()),
+    opts: [svg(lshape(true)), svg(rect(12,12,16,8)), svg(lshape()), svg(lshape(true)), svg(rect(12,12,8,16))] },
+  // 34
+  { id:34, correct:['B','D'],
+    model: svg(cross()),
+    opts: [svg(circle(20,20,10)), svg(cross()), svg(arrow('up')), svg(cross()), svg(tri(20,20,12))] },
+  // 35
+  { id:35, correct:['A'],
+    model: svg(chevron('right')),
+    opts: [svg(chevron('right')), svg(chevron('left')), svg(chevron('double')), svg(arrow('right')), svg(chevron('left'))] },
+  // 36
+  { id:36, correct:['C','E'],
+    model: svg(tri(20,20,13,0)+circle(20,20,6)),
+    opts: [svg(tri(20,20,13,90)+circle(20,20,6)), svg(tri(20,20,13,180)), svg(tri(20,20,13,45)+circle(20,20,6)), svg(tri(20,20,13,0)), svg(tri(20,20,13,270)+circle(20,20,6))] },
+  // 37
+  { id:37, correct:['B'],
+    model: svg(arrow('up')+rect(15,20,10,14)),
+    opts: [svg(arrow('down')+rect(15,6,10,14)), svg(arrow('up')+rect(15,20,10,14)), svg(arrow('left')+rect(20,15,14,10)), svg(arrow('right')+rect(6,15,14,10)), svg(arrow('up')+rect(14,20,12,14))] },
+  // 38
+  { id:38, correct:['A','C'],
+    model: svg(lshape()),
+    opts: [svg(lshape()), svg(lshape(true)), svg(lshape()), svg(rect(10,10,20,20)), svg(lshape(true))] },
+  // 39
+  { id:39, correct:['D'],
+    model: svg(chevron('double')),
+    opts: [svg(chevron('right')), svg(chevron('left')), svg(arrow('right')), svg(chevron('double')), svg(cross())] },
+  // 40
+  { id:40, correct:['B','E'],
+    model: svg(tri(20,20,14,30)),
+    opts: [svg(tri(20,20,14,90)), svg(tri(20,20,14,30)), svg(tri(20,20,14,0)), svg(tri(20,20,14,60)), svg(tri(20,20,14,210))] },
+  // 41
+  { id:41, correct:['A'],
+    model: svg(rect(10,10,20,12,0)+rect(14,25,12,6,0)),
+    opts: [svg(rect(10,10,20,12,0)+rect(14,25,12,6,0)), svg(rect(10,18,20,12,0)+rect(14,8,12,6,0)), svg(rect(10,10,20,12,45)+rect(14,25,12,6,0)), svg(rect(10,10,12,20,0)+rect(25,14,6,12,0)), svg(rect(10,10,20,12,0))] },
+  // 42
+  { id:42, correct:['C','D'],
+    model: svg(circle(20,20,12)+circle(20,20,5)),
+    opts: [svg(circle(20,20,12)), svg(circle(20,20,12)+tri(20,20,5)), svg(circle(20,20,12)+circle(20,20,5)), svg(circle(20,20,12)+circle(20,20,5)), svg(circle(20,20,10)+circle(20,20,5))] },
+  // 43
+  { id:43, correct:['B'],
+    model: svg(chevron('left')+chevron('left').replace(/M/,'M').replace('M28','M18')),
+    opts: [svg(chevron('right')), svg(chevron('double')), svg(chevron('left')), svg(arrow('left')), svg(chevron('left'))] },
+  // 44
+  { id:44, correct:['A','E'],
+    model: svg(lshape(true)),
+    opts: [svg(lshape(true)), svg(lshape()), svg(rect(10,10,20,20)), svg(arrow('down')), svg(lshape(true))] },
+  // 45
+  { id:45, correct:['D'],
+    model: svg(tri(20,20,13,0)+tri(20,20,8,180)),
+    opts: [svg(tri(20,20,13,0)), svg(tri(20,20,13,180)+tri(20,20,8,0)), svg(tri(20,20,13,90)+tri(20,20,8,270)), svg(tri(20,20,13,0)+tri(20,20,8,180)), svg(tri(20,20,13,60)+tri(20,20,8,240))] },
+  // 46
+  { id:46, correct:['B','C'],
+    model: svg(arrow('right')+rect(8,14,10,12)),
+    opts: [svg(arrow('left')+rect(8,14,10,12)), svg(arrow('right')+rect(8,14,10,12)), svg(arrow('right')+rect(8,14,10,12)), svg(arrow('up')+rect(14,8,12,10)), svg(arrow('right')+rect(8,14,12,12))] },
+  // 47
+  { id:47, correct:['A'],
+    model: svg(cross()+circle(20,20,14)),
+    opts: [svg(cross()+circle(20,20,14)), svg(cross()+circle(20,20,10)), svg(circle(20,20,14)), svg(cross()+circle(20,20,14,45)), svg(cross())] },
+  // 48
+  { id:48, correct:['C','E'],
+    model: svg(rect(8,8,24,10)+rect(16,22,8,10)),
+    opts: [svg(rect(8,8,10,24)+rect(22,16,10,8)), svg(rect(8,8,24,10)+rect(12,22,10,10)), svg(rect(8,8,24,10)+rect(16,22,8,10)), svg(rect(8,22,24,10)+rect(16,10,8,10)), svg(rect(8,8,24,10)+rect(16,22,8,10))] },
+  // 49
+  { id:49, correct:['B'],
+    model: svg(circle(20,20,14)+cross()),
+    opts: [svg(circle(20,20,14)), svg(circle(20,20,14)+cross()), svg(circle(20,20,10)+cross()), svg(circle(20,20,14)+arrow('up')), svg(cross())] },
+];
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let current = 0;
+let answers  = Array(ITEMS.length).fill(null); // null | letter
+let timerInt = null;
+let elapsed  = 0;
+const TOTAL_SEC = 300;
+
+// ─────────────────────────────────────────────────────────────
+// TIMER
+// ─────────────────────────────────────────────────────────────
+function startTimer(){
+  const timerEl = document.getElementById('timer');
+  timerInt = setInterval(()=>{
+    elapsed++;
+    const left = TOTAL_SEC - elapsed;
+    if(left <= 0){ clearInterval(timerInt); finishTest(); return; }
+    const m = Math.floor(left/60).toString().padStart(1,'0');
+    const s = (left%60).toString().padStart(2,'0');
+    timerEl.textContent = `${m}:${s}`;
+    if(left <= 60) timerEl.classList.add('urgent');
+  }, 1000);
+}
+
+// ─────────────────────────────────────────────────────────────
+// RENDER QUESTION
+// ─────────────────────────────────────────────────────────────
+function renderQ(){
+  const item = ITEMS[current];
+  document.getElementById('qLabel').textContent = `Ítem ${item.id}  ·  Pregunta ${current+1} de ${ITEMS.length}`;
+
+  // Figures
+  const fa = document.getElementById('figureArea');
+  fa.innerHTML = `
+    <div class="fig-box">
+      <div class="fig-label">Modelo</div>
+      <div class="fig-svg" style="color:#5B8CFF">${item.model}</div>
+    </div>
+    <div class="fig-sep">→</div>
+    <div class="fig-label" style="color:var(--muted);align-self:center;font-size:13px;font-family:var(--mono)">Selecciona las que<br>coinciden ↓</div>
+  `;
+
+  // Options
+  const og = document.getElementById('optionsGrid');
+  og.innerHTML = '';
+  const letters = ['A','B','C','D','E'];
+  letters.forEach((l,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn' + (answers[current]===l?' selected':'');
+    btn.dataset.letter = l;
+    btn.innerHTML = `<span class="opt-letter">${l}</span><div class="opt-svg" style="color:var(--text)">${item.opts[i]}</div>`;
+    btn.onclick = ()=>selectAnswer(l);
+    og.appendChild(btn);
+  });
+
+  // Nav
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').textContent = current === ITEMS.length-1 ? 'Finalizar ✓' : 'Siguiente →';
+  document.getElementById('nextBtn').onclick = current === ITEMS.length-1 ? finishTest : ()=>navigate(1);
+
+  // Progress
+  const pct = ((current+1)/ITEMS.length*100).toFixed(0);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `Pregunta ${current+1} de ${ITEMS.length}`;
+  const answered = answers.filter(a=>a!==null).length;
+  document.getElementById('answeredText').textContent = `${answered} respondidas`;
+}
+
+function selectAnswer(letter){
+  answers[current] = letter;
+  document.querySelectorAll('.opt-btn').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.letter===letter);
+  });
+  // Update answered count
+  const answered = answers.filter(a=>a!==null).length;
+  document.getElementById('answeredText').textContent = `${answered} respondidas`;
+}
+
+function navigate(dir){
+  const next = current + dir;
+  if(next >= 0 && next < ITEMS.length){ current = next; renderQ(); }
+}
+
+// ─────────────────────────────────────────────────────────────
+// START / FINISH / RESET
+// ─────────────────────────────────────────────────────────────
+function startTest(){
+  document.getElementById('screenInstr').classList.remove('active');
+  document.getElementById('screenQ').classList.add('active');
+  document.getElementById('progressWrap').style.display='flex';
+  document.getElementById('timerWrap').style.display='flex';
+  current = 0;
+  answers = Array(ITEMS.length).fill(null);
+  elapsed = 0;
+  renderQ();
+  startTimer();
+}
+
+function finishTest(){
+  clearInterval(timerInt);
+
+  let correct=0, wrong=0, omit=0;
+  ITEMS.forEach((item,i)=>{
+    const ans = answers[i];
+    if(!ans){ omit++; return; }
+    if(item.correct.includes(ans)) correct++; else wrong++;
+  });
+
+  const puntaje = correct;
+  const total   = ITEMS.length;
+  const pct     = Math.round(puntaje/total*100);
+
+  document.getElementById('scoreBig').textContent = puntaje;
+  document.getElementById('scoreLabel').textContent = `Puntaje directo — ${pct}% de acierto (${puntaje}/${total} ítems)`;
+  document.getElementById('rCorrect').textContent = correct;
+  document.getElementById('rWrong').textContent   = wrong;
+  document.getElementById('rOmit').textContent    = omit;
+  const min = Math.floor(elapsed/60), sec = (elapsed%60).toString().padStart(2,'0');
+  document.getElementById('rTime').textContent = `${min}:${sec}`;
+
+  document.getElementById('screenQ').classList.remove('active');
+  document.getElementById('screenResult').classList.add('active');
+  document.getElementById('progressWrap').style.display='none';
+  document.getElementById('timerWrap').style.display='none';
+}
+
+function resetTest(){
+  document.getElementById('screenResult').classList.remove('active');
+  document.getElementById('screenInstr').classList.add('active');
+  document.getElementById('timer').classList.remove('urgent');
+  document.getElementById('timer').textContent = '5:00';
+}
+</script>
+</body>
+</html>
