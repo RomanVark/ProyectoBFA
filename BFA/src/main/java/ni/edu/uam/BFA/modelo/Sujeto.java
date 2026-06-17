@@ -38,6 +38,24 @@ public class Sujeto extends Usuario {
     @CollectionView("SesionEvaluacionList")
     private List<SesionEvaluacion> sesiones = new ArrayList<>();
 
+    // ?? Getters & Setters ??????????????????????????????????????
 
+    public Integer getEdad() { return edad; }
+    public void setEdad(Integer edad) { this.edad = edad; }
+
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
+
+    public String getProfesion() { return profesion; }
+    public void setProfesion(String profesion) { this.profesion = profesion; }
+
+    public String getEstudiosRealizados() { return estudiosRealizados; }
+    public void setEstudiosRealizados(String estudiosRealizados) { this.estudiosRealizados = estudiosRealizados; }
+
+    public Date getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(Date fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+
+    public List<SesionEvaluacion> getSesiones() { return sesiones; }
+    public void setSesiones(List<SesionEvaluacion> sesiones) { this.sesiones = sesiones; }
 }
 
