@@ -26,4 +26,15 @@ public class Psicologo extends Usuario {
     @OneToMany(mappedBy = "psicologo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @CollectionView("SesionEvaluacionList")
     private List<SesionEvaluacion> sesiones = new ArrayList<>();
+
+    // ?? Getters & Setters ??????????????????????????????????????
+
+    public String getCodigoColegido() { return codigoColegido; }
+    public void setCodigoColegido(String codigoColegido) { this.codigoColegido = codigoColegido; }
+
+    public String getEspecialidad() { return especialidad; }
+    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+
+    public List<SesionEvaluacion> getSesiones() { return sesiones; }
+    public void setSesiones(List<SesionEvaluacion> sesiones) { this.sesiones = sesiones; }
 }
