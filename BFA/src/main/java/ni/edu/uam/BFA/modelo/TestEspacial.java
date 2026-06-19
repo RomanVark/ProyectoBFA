@@ -1,10 +1,7 @@
 package ni.edu.uam.BFA.modelo;
 
 import javax.persistence.*;
-
-import org.htmlunit.xpath.operations.String;
 import org.openxava.annotations.*;
-
 
 /**
  * Test Espacial ? Desplazamiento (subclase de TestAptitud).
