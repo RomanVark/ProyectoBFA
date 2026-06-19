@@ -27,7 +27,6 @@ public class Psicologo extends Usuario {
     @CollectionView("SesionEvaluacionList")
     private List<SesionEvaluacion> sesiones = new ArrayList<>();
 
-    // ?? Getters & Setters ??????????????????????????????????????
 
     public String getCodigoColegido() { return codigoColegido; }
     public void setCodigoColegido(String codigoColegido) { this.codigoColegido = codigoColegido; }

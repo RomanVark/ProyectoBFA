@@ -1,12 +1,20 @@
 package ni.edu.uam.BFA.modelo;
+
+
 import javax.persistence.*;
 import java.util.*;
 import org.openxava.annotations.*;
 
-
+/**
+ * Perfil BFA generado al concluir una sesión.
+ * Referencia 1 sesión y contiene 18 ResultadoFactor.
+ */
 @Entity
 @Table(name = "perfil_bfa")
-@View(members = "idPerfil, fechaGeneracion; observacionesGeneral; sesionEvaluacion; resultados")
+@Views({
+        @View(members = "idPerfil, fechaGeneracion; observacionesGeneral; sesionEvaluacion; resultados"),
+        @View(name = "Simple", members = "idPerfil, fechaGeneracion")
+})
 public class PerfilBFA {
 
     @Id
@@ -24,17 +32,19 @@ public class PerfilBFA {
 
 
 
+    /** Sesión de la que proviene este perfil. */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sesion", nullable = false, unique = true)
     @Required
     @ReferenceView("Simple")
     private SesionEvaluacion sesionEvaluacion;
 
+    /** 18 factores de resultado del perfil. */
     @OneToMany(mappedBy = "perfilBFA", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @CollectionView("ResultadoFactorList")
     private List<ResultadoFactor> resultados = new ArrayList<>();
 
-
+    // ?? Getters & Setters ??????????????????????????????????????
 
     public Integer getIdPerfil() { return idPerfil; }
     public void setIdPerfil(Integer idPerfil) { this.idPerfil = idPerfil; }

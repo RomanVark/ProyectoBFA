@@ -10,8 +10,12 @@ import org.openxava.annotations.*;
  */
 @Entity
 @Table(name = "sesion_evaluacion")
-@View(members = "idSesion, estado; fechaInicio, fechaFin; finalidad; "
-        + "psicologo; sujeto; perfilBFA; respuestas")
+@Views({
+        @View(members = "idSesion, estado; fechaInicio, fechaFin; finalidad; "
+                + "psicologo; sujeto; perfilBFA; respuestas"),
+        @View(name = "Simple", members = "idSesion, estado, fechaInicio")
+})
+
 public class SesionEvaluacion {
 
     @Id

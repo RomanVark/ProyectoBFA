@@ -1,5 +1,7 @@
 package ni.edu.uam.BFA.modelo;
 
+
+
 import javax.persistence.*;
 import java.util.*;
 import org.openxava.annotations.*;

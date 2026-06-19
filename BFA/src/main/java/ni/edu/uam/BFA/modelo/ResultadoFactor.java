@@ -1,16 +1,21 @@
 package ni.edu.uam.BFA.modelo;
 
 
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.openxava.annotations.Hidden;
 import org.openxava.annotations.ReferenceView;
+import org.openxava.annotations.Required;
 import org.openxava.annotations.View;
+import org.openxava.annotations.Views;
 
+import javax.persistence.*;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "resultado_factor")
-@View(members = "perfilBFA; accionimoFactor; puntajeDirecto; percentil; puntuacionTipica")
+@Views({
+        @View(members = "perfilBFA; accionimoFactor; puntajeDirecto; percentil; puntuacionTipica"),
+        @View(name = "Simple", members = "accionimFactor, puntajeDirecto")
+})
 public class ResultadoFactor {
 
     @Id
