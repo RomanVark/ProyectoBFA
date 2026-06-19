@@ -1,6 +1,7 @@
-package ni.edu.uam.BFA.modelo;
+package ni.edu.uam.BFA.servicios;
 
 
+import ni.edu.uam.BFA.modelo.PerfilBFA;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.openxava.annotations.Hidden;
 import org.openxava.annotations.ReferenceView;
