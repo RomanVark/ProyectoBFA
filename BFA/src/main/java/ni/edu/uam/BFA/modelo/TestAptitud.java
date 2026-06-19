@@ -3,7 +3,6 @@ import javax.persistence.*;
 import java.util.*;
 import org.openxava.annotations.*;
 
-
 @Entity
 @Table(name = "test_aptitud")
 @Inheritance(strategy = InheritanceType.JOINED)
