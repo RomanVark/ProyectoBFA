@@ -4,6 +4,8 @@ package ni.edu.uam.BFA.modelo;
 
 import javax.persistence.*;
 import java.util.*;
+
+import ni.edu.uam.BFA.servicios.SesionEvaluacion;
 import org.openxava.annotations.*;
 
 /**

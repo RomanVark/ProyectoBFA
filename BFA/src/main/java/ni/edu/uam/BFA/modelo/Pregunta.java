@@ -3,6 +3,8 @@ package ni.edu.uam.BFA.modelo;
 
 
 import javax.persistence.*;
+
+import ni.edu.uam.BFA.servicios.TestAptitud;
 import org.openxava.annotations.*;
 
 

@@ -1,26 +1,17 @@
-package ni.edu.uam.BFA.modelo;
+package ni.edu.uam.BFA.servicios;
 
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ni.edu.uam.BFA.modelo.PerfilBFA;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.openxava.annotations.Hidden;
 import org.openxava.annotations.ReferenceView;
-import org.openxava.annotations.Required;
 import org.openxava.annotations.View;
-import org.openxava.annotations.Views;
 
 import javax.persistence.*;
-import javax.persistence.*;
-@Getter
-@Setter
-@NoArgsConstructor
+
 @Entity
 @Table(name = "resultado_factor")
-@Views({
-        @View(members = "perfilBFA; accionimoFactor; puntajeDirecto; percentil; puntuacionTipica"),
-        @View(name = "Simple", members = "accionimFactor, puntajeDirecto")
-})
+@View(members = "perfilBFA; accionimoFactor; puntajeDirecto; percentil; puntuacionTipica")
 public class ResultadoFactor {
 
     @Id
@@ -81,5 +72,21 @@ public class ResultadoFactor {
 
 
 
+    public Integer getIdResultado() { return idResultado; }
+    public void setIdResultado(Integer idResultado) { this.idResultado = idResultado; }
 
+    public String getAccionimFactor() { return accionimFactor; }
+    public void setAccionimFactor(String accionimFactor) { this.accionimFactor = accionimFactor; }
+
+    public Integer getPuntajeDirecto() { return puntajeDirecto; }
+    public void setPuntajeDirecto(Integer puntajeDirecto) { this.puntajeDirecto = puntajeDirecto; }
+
+    public Integer getPercentil() { return percentil; }
+    public void setPercentil(Integer percentil) { this.percentil = percentil; }
+
+    public Integer getPuntuacionTipica() { return puntuacionTipica; }
+    public void setPuntuacionTipica(Integer puntuacionTipica) { this.puntuacionTipica = puntuacionTipica; }
+
+    public PerfilBFA getPerfilBFA() { return perfilBFA; }
+    public void setPerfilBFA(PerfilBFA perfilBFA) { this.perfilBFA = perfilBFA; }
 }

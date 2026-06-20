@@ -1,7 +1,11 @@
-package ni.edu.uam.BFA.modelo;
+package ni.edu.uam.BFA.servicios;
 
 import javax.persistence.*;
 import java.util.*;
+
+import ni.edu.uam.BFA.modelo.PerfilBFA;
+import ni.edu.uam.BFA.modelo.Psicologo;
+import ni.edu.uam.BFA.modelo.Sujeto;
 import org.openxava.annotations.*;
 
 /**

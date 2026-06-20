@@ -1,6 +1,8 @@
-package ni.edu.uam.BFA.modelo;
+package ni.edu.uam.BFA.servicios;
 import javax.persistence.*;
 import java.util.*;
+
+import ni.edu.uam.BFA.modelo.Pregunta;
 import org.openxava.annotations.*;
 
 @Entity
