@@ -6,6 +6,10 @@ import java.util.*;
 import ni.edu.uam.BFA.servicios.SesionEvaluacion;
 import org.openxava.annotations.*;
 
+// Importaciones de Lombok
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Psicólogo que administra sesiones de evaluación.
  * Hereda correo, idUsuario y nombre de Usuario.
@@ -13,6 +17,8 @@ import org.openxava.annotations.*;
 @Entity
 @Table(name = "psicologo")
 @View(members = "nombre, correo; codigoColegido; especialidad; sesiones")
+@Getter // Lombok: Genera los métodos get() para los atributos de esta clase
+@Setter // Lombok: Genera los métodos set() para los atributos de esta clase
 public class Psicologo extends Usuario {
 
     @Column(nullable = false, unique = true, length = 50)
@@ -29,14 +35,4 @@ public class Psicologo extends Usuario {
     @CollectionView("SesionEvaluacionList")
     private List<SesionEvaluacion> sesiones = new ArrayList<>();
 
-    // ?? Getters & Setters ??????????????????????????????????????
-
-    public String getCodigoColegido() { return codigoColegido; }
-    public void setCodigoColegido(String codigoColegido) { this.codigoColegido = codigoColegido; }
-
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
-
-    public List<SesionEvaluacion> getSesiones() { return sesiones; }
-    public void setSesiones(List<SesionEvaluacion> sesiones) { this.sesiones = sesiones; }
 }

@@ -1,16 +1,19 @@
 package ni.edu.uam.BFA.modelo;
 
-
-
 import javax.persistence.*;
 
 import ni.edu.uam.BFA.servicios.TestAptitud;
 import org.openxava.annotations.*;
 
+// Importaciones de Lombok
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "pregunta")
 @View(members = "idPregunta, numeroPregunta, tipoPregunta; enunciado; respuestaCorrecta; testAptitud")
+@Getter // Lombok: Genera todos los métodos get() automáticamente
+@Setter // Lombok: Genera todos los métodos set() automáticamente
 public class Pregunta {
 
     @Id
@@ -27,7 +30,6 @@ public class Pregunta {
     @Required
     private Integer numeroPregunta;
 
-
     @Column(name = "respuesta_correcta", nullable = false, length = 10)
     @Required
     private char respuestaCorrecta;
@@ -36,29 +38,10 @@ public class Pregunta {
     @Required
     private String tipoPregunta;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_test", nullable = false)
     @Required
     @ReferenceView("Simple")
     private TestAptitud testAptitud;
 
-
-    public Integer getIdPregunta() { return idPregunta; }
-    public void setIdPregunta(Integer idPregunta) { this.idPregunta = idPregunta; }
-
-    public String getEnunciado() { return enunciado; }
-    public void setEnunciado(String enunciado) { this.enunciado = enunciado; }
-
-    public Integer getNumeroPregunta() { return numeroPregunta; }
-    public void setNumeroPregunta(Integer numeroPregunta) { this.numeroPregunta = numeroPregunta; }
-
-    public char getRespuestaCorrecta() { return respuestaCorrecta; }
-    public void setRespuestaCorrecta(char respuestaCorrecta) { this.respuestaCorrecta = respuestaCorrecta; }
-
-    public String getTipoPregunta() { return tipoPregunta; }
-    public void setTipoPregunta(String tipoPregunta) { this.tipoPregunta = tipoPregunta; }
-
-    public TestAptitud getTestAptitud() { return testAptitud; }
-    public void setTestAptitud(TestAptitud testAptitud) { this.testAptitud = testAptitud; }
 }
