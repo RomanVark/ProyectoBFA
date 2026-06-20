@@ -19,7 +19,13 @@ import lombok.Setter;
 @Entity
 @Table(name = "test_espacial")
 @PrimaryKeyJoinColumn(name = "id_test")
-@View(members = "nombreTest, tipoTest; tiempoLimite; tipoMovimiento; instrucciones; preguntas")
+@Views({
+        // Vista por defecto (cuando entras a ver el test completo)
+        @View(members = "nombreTest, tipoTest; tiempoLimite; tipoMovimiento; instrucciones; preguntas"),
+
+        // Vista Simple (la que OpenXava busca al mostrar el combo en la pantalla Pregunta)
+        @View(name = "Simple", members = "nombreTest, tipoMovimiento")
+})
 @Getter // Lombok: Genera los métodos get()
 @Setter // Lombok: Genera los métodos set()
 public class TestEspacial extends TestAptitud {
@@ -54,4 +60,4 @@ public class TestEspacial extends TestAptitud {
         return super.calcularPuntajeDirecto(respuestas);
     }
 
-    }
+}

@@ -41,7 +41,6 @@ public class Pregunta {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_test", nullable = false)
     @Required
-    @ReferenceView("Simple")
     private TestAptitud testAptitud;
 
 }

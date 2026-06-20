@@ -6,6 +6,7 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 
 @MappedSuperclass
+@View(name = "Simple", members = "nombre, correo")
 @Getter // Lombok: Genera getNombre(), getCorreo(), etc.
 @Setter // Lombok: Genera setNombre(), setCorreo(), etc.
 public abstract class Usuario {

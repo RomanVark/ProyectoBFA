@@ -6,6 +6,7 @@ import java.util.*;
 import ni.edu.uam.BFA.servicios.ResultadoFactor;
 import ni.edu.uam.BFA.servicios.SesionEvaluacion;
 import org.openxava.annotations.*;
+import org.openxava.calculators.CurrentDateCalculator;
 
 // Importaciones de Lombok
 import lombok.Getter;
@@ -25,6 +26,8 @@ public class PerfilBFA {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha_generacion")
+    @DefaultValueCalculator(CurrentDateCalculator.class) // <-- Obtiene la fecha actual al crear un nuevo registro
+    @ReadOnly // <-- Evita que el usuario modifique la fecha de generación manualmente
     private Date fechaGeneracion;
 
     @Column(name = "observaciones_general", length = 1000)
@@ -34,7 +37,6 @@ public class PerfilBFA {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sesion", nullable = false, unique = true)
     @Required
-    @ReferenceView("Simple")
     private SesionEvaluacion sesionEvaluacion;
 
     @OneToMany(mappedBy = "perfilBFA", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

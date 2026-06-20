@@ -13,7 +13,13 @@ import lombok.Setter;
 @Entity
 @Table(name = "test_aptitud")
 @Inheritance(strategy = InheritanceType.JOINED)
-@View(members = "idTest, nombreTest, tipoTest; instrucciones; tiempoLimite; preguntas")
+@Views({
+        // Vista por defecto
+        @View(members = "idTest, nombreTest, tipoTest; instrucciones; tiempoLimite; preguntas"),
+
+        // Vista Simple para las referencias (como en la clase Pregunta)
+        @View(name = "Simple", members = "nombreTest, tipoTest")
+})
 @Getter // Lombok: Genera todos los métodos get() automáticamente
 @Setter // Lombok: Genera todos los métodos set() automáticamente
 public class TestAptitud {
