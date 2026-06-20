@@ -11,7 +11,11 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "pregunta")
-@View(members = "idPregunta, numeroPregunta, tipoPregunta; enunciado; respuestaCorrecta; testAptitud")
+// EL CAMBIO ESTÁ AQUÍ: Agrupamos las vistas y añadimos la "Simple"
+@Views({
+        @View(members = "idPregunta, numeroPregunta, tipoPregunta; enunciado; respuestaCorrecta; testAptitud"), // Vista original
+        @View(name = "Simple", members = "numeroPregunta, enunciado") // Nueva vista para RespuestaSujeto
+})
 @Getter // Lombok: Genera todos los métodos get() automáticamente
 @Setter // Lombok: Genera todos los métodos set() automáticamente
 public class Pregunta {
@@ -32,7 +36,7 @@ public class Pregunta {
 
     @Column(name = "respuesta_correcta", nullable = false, length = 10)
     @Required
-    private char respuestaCorrecta;
+    private String respuestaCorrecta;
 
     @Column(name = "tipo_pregunta", nullable = false, length = 50)
     @Required

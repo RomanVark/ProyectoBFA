@@ -17,7 +17,7 @@ import lombok.Setter;
 @Table(name = "respuesta_sujeto")
 @View(members = "idRespuesta, estado; esCorrecta; respuestaMarcada; "
         + "fechaInicio; sesionEvaluacion; pregunta")
-@Getter // Lombok: Genera todos los métodos get() automáticamente (incluyendo isEsCorrecta())
+@Getter // Lombok: Genera todos los métodos get() automáticamente
 @Setter // Lombok: Genera todos los métodos set() automáticamente
 public class RespuestaSujeto {
 
@@ -43,8 +43,8 @@ public class RespuestaSujeto {
      * Letra marcada por el sujeto: A, B, C, D o E.
      * Puede ser nula si la pregunta fue omitida.
      */
-    @Column(name = "respuesta_marcada")
-    private Character respuestaMarcada;
+    @Column(name = "respuesta_marcada", length = 10)
+    private String respuestaMarcada;
 
     // --- Relaciones ---
 
@@ -58,7 +58,7 @@ public class RespuestaSujeto {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pregunta", nullable = false)
     @Required
-    @ReferenceView("Simple")
+    @ReferenceView("Simple") // Esta ya la arreglamos en el paso anterior (Pregunta.java)
     private Pregunta pregunta;
 
     // --- Lógica al marcar respuesta ---
@@ -67,12 +67,15 @@ public class RespuestaSujeto {
      * Registra la letra marcada y evalúa si es correcta automáticamente.
      * Mensaje 4 del diagrama de colaboración: responderPregunta().
      */
-    public void responderPregunta(char letra) {
+    // CAMBIO 2: Recibimos un String en lugar de char
+    public void responderPregunta(String letra) {
         this.respuestaMarcada = letra;
         this.fechaInicio = new Date();
         this.estado = "RESPONDIDA";
+
         this.esCorrecta = (pregunta != null)
-                && (pregunta.getRespuestaCorrecta() == letra);
+                && (letra != null)
+                && (pregunta.getRespuestaCorrecta().equals(letra));
     }
 
 }

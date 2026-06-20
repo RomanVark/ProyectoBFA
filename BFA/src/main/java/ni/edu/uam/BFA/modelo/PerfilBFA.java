@@ -14,7 +14,11 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "perfil_bfa")
-@View(members = "idPerfil, fechaGeneracion; observacionesGeneral; sesionEvaluacion; resultados")
+// EL CAMBIO ESTÁ AQUÍ: Agrupamos las vistas y añadimos la "Simple"
+@Views({
+        @View(members = "idPerfil, fechaGeneracion; observacionesGeneral; sesionEvaluacion; resultados"),
+        @View(name = "Simple", members = "fechaGeneracion") // La vista que pide ResultadoFactor
+})
 @Getter // Lombok: Genera todos los métodos get() automáticamente
 @Setter // Lombok: Genera todos los métodos set() automáticamente
 public class PerfilBFA {
@@ -26,8 +30,8 @@ public class PerfilBFA {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha_generacion")
-    @DefaultValueCalculator(CurrentDateCalculator.class) // <-- Obtiene la fecha actual al crear un nuevo registro
-    @ReadOnly // <-- Evita que el usuario modifique la fecha de generación manualmente
+    @DefaultValueCalculator(CurrentDateCalculator.class)
+    @ReadOnly
     private Date fechaGeneracion;
 
     @Column(name = "observaciones_general", length = 1000)
