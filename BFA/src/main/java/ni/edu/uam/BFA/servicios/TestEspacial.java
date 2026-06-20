@@ -26,7 +26,7 @@ public class TestEspacial extends TestAptitud {
     @Required
     private String tipoMovimiento;
 
-    // ?? Constructor con valores por defecto del test ????????????
+
 
     public TestEspacial() {
         setNombreTest("Test Espacial ? Desplazamiento");
