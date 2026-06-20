@@ -8,6 +8,10 @@ import ni.edu.uam.BFA.modelo.Psicologo;
 import ni.edu.uam.BFA.modelo.Sujeto;
 import org.openxava.annotations.*;
 
+// Importaciones de Lombok
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Sesión de evaluación BFA.
  * Relaciona un Psicólogo con un Sujeto y contiene las respuestas.
@@ -19,7 +23,8 @@ import org.openxava.annotations.*;
                 + "psicologo; sujeto; perfilBFA; respuestas"),
         @View(name = "Simple", members = "idSesion, estado, fechaInicio")
 })
-
+@Getter // Lombok: Genera todos los métodos get() automáticamente
+@Setter // Lombok: Genera todos los métodos set() automáticamente
 public class SesionEvaluacion {
 
     @Id
@@ -43,7 +48,7 @@ public class SesionEvaluacion {
     @Column(length = 255)
     private String finalidad;
 
-    // ?? Relaciones ?????????????????????????????????????????????
+    // --- Relaciones ---
 
     /** Psicólogo que administra la sesión (0..* sesiones por psicólogo). */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -68,7 +73,7 @@ public class SesionEvaluacion {
     @CollectionView("RespuestaSujetoList")
     private List<RespuestaSujeto> respuestas = new ArrayList<>();
 
-    // ?? Métodos de negocio ??????????????????????????????????????
+    // --- Métodos de negocio (Intactos) ---
 
     /**
      * Inicia la sesión: cambia estado a EN_PROCESO y registra fecha de inicio.
@@ -88,33 +93,4 @@ public class SesionEvaluacion {
         this.respuestas.add(respuesta);
     }
 
-    // ?? Getters & Setters ??????????????????????????????????????
-
-    public Integer getIdSesion() { return idSesion; }
-    public void setIdSesion(Integer idSesion) { this.idSesion = idSesion; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public Date getFechaInicio() { return fechaInicio; }
-    public void setFechaInicio(Date fechaInicio) { this.fechaInicio = fechaInicio; }
-
-    public Date getFechaFin() { return fechaFin; }
-    public void setFechaFin(Date fechaFin) { this.fechaFin = fechaFin; }
-
-    public String getFinalidad() { return finalidad; }
-    public void setFinalidad(String finalidad) { this.finalidad = finalidad; }
-
-    public Psicologo getPsicologo() { return psicologo; }
-    public void setPsicologo(Psicologo psicologo) { this.psicologo = psicologo; }
-
-    public Sujeto getSujeto() { return sujeto; }
-    public void setSujeto(Sujeto sujeto) { this.sujeto = sujeto; }
-
-    public PerfilBFA getPerfilBFA() { return perfilBFA; }
-    public void setPerfilBFA(PerfilBFA perfilBFA) { this.perfilBFA = perfilBFA; }
-
-    public List<RespuestaSujeto> getRespuestas() { return respuestas; }
-    public void setRespuestas(List<RespuestaSujeto> respuestas) { this.respuestas = respuestas; }
 }
-

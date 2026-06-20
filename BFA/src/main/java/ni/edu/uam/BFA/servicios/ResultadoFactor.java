@@ -1,17 +1,24 @@
 package ni.edu.uam.BFA.servicios;
 
-
 import ni.edu.uam.BFA.modelo.PerfilBFA;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+
+// Corregido: Usando el @Required correcto de OpenXava
+import org.openxava.annotations.Required;
 import org.openxava.annotations.Hidden;
 import org.openxava.annotations.ReferenceView;
 import org.openxava.annotations.View;
 
 import javax.persistence.*;
 
+// Importaciones de Lombok
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "resultado_factor")
 @View(members = "perfilBFA; accionimoFactor; puntajeDirecto; percentil; puntuacionTipica")
+@Getter // Lombok: Genera los getters
+@Setter // Lombok: Genera los setters
 public class ResultadoFactor {
 
     @Id
@@ -19,10 +26,9 @@ public class ResultadoFactor {
     @Hidden
     private Integer idResultado;
 
-
     @Column(name = "accionimo_factor", nullable = false, length = 50)
     @Required
-    private String accionimFactor;
+    private String accionimoFactor;
 
     @Column(name = "puntaje_directo")
     private Integer puntajeDirecto;
@@ -33,16 +39,13 @@ public class ResultadoFactor {
     @Column(name = "puntuacion_tipica")
     private Integer puntuacionTipica;
 
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_perfil", nullable = false)
     @Required
     @ReferenceView("Simple")
-
     private PerfilBFA perfilBFA;
 
-
+    // --- Lógica de Negocio (Lombok no toca esto, se mantiene intacto) ---
 
     public void generarResultado(int pd) {
         this.puntajeDirecto = pd;
@@ -53,7 +56,6 @@ public class ResultadoFactor {
     }
 
     private int convertirAPercentil(int pd) {
-        // Placeholder ? sustituir con tabla de baremo real
         return Math.min(pd * 2, 99);
     }
 
@@ -70,23 +72,4 @@ public class ResultadoFactor {
         return 9;
     }
 
-
-
-    public Integer getIdResultado() { return idResultado; }
-    public void setIdResultado(Integer idResultado) { this.idResultado = idResultado; }
-
-    public String getAccionimFactor() { return accionimFactor; }
-    public void setAccionimFactor(String accionimFactor) { this.accionimFactor = accionimFactor; }
-
-    public Integer getPuntajeDirecto() { return puntajeDirecto; }
-    public void setPuntajeDirecto(Integer puntajeDirecto) { this.puntajeDirecto = puntajeDirecto; }
-
-    public Integer getPercentil() { return percentil; }
-    public void setPercentil(Integer percentil) { this.percentil = percentil; }
-
-    public Integer getPuntuacionTipica() { return puntuacionTipica; }
-    public void setPuntuacionTipica(Integer puntuacionTipica) { this.puntuacionTipica = puntuacionTipica; }
-
-    public PerfilBFA getPerfilBFA() { return perfilBFA; }
-    public void setPerfilBFA(PerfilBFA perfilBFA) { this.perfilBFA = perfilBFA; }
 }

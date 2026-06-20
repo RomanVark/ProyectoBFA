@@ -6,16 +6,19 @@ import java.util.Date;
 import ni.edu.uam.BFA.modelo.Pregunta;
 import org.openxava.annotations.*;
 
+// Importaciones de Lombok
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Respuesta de un sujeto a una pregunta dentro de una sesión.
- *
- * Mensaje 4 del diagrama: responderPregunta() crea esta entidad.
- * Mensaje 5: guardarRespuesta() la persiste a través de SesionEvaluacion.
  */
 @Entity
 @Table(name = "respuesta_sujeto")
 @View(members = "idRespuesta, estado; esCorrecta; respuestaMarcada; "
         + "fechaInicio; sesionEvaluacion; pregunta")
+@Getter // Lombok: Genera todos los métodos get() automáticamente (incluyendo isEsCorrecta())
+@Setter // Lombok: Genera todos los métodos set() automáticamente
 public class RespuestaSujeto {
 
     @Id
@@ -43,7 +46,7 @@ public class RespuestaSujeto {
     @Column(name = "respuesta_marcada")
     private Character respuestaMarcada;
 
-    // ?? Relaciones ?????????????????????????????????????????????
+    // --- Relaciones ---
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sesion", nullable = false)
@@ -58,7 +61,7 @@ public class RespuestaSujeto {
     @ReferenceView("Simple")
     private Pregunta pregunta;
 
-    // ?? Lógica al marcar respuesta ??????????????????????????????
+    // --- Lógica al marcar respuesta ---
 
     /**
      * Registra la letra marcada y evalúa si es correcta automáticamente.
@@ -72,26 +75,4 @@ public class RespuestaSujeto {
                 && (pregunta.getRespuestaCorrecta() == letra);
     }
 
-    // ?? Getters & Setters ??????????????????????????????????????
-
-    public Integer getIdRespuesta() { return idRespuesta; }
-    public void setIdRespuesta(Integer idRespuesta) { this.idRespuesta = idRespuesta; }
-
-    public boolean isEsCorrecta() { return esCorrecta; }
-    public void setEsCorrecta(boolean esCorrecta) { this.esCorrecta = esCorrecta; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public Date getFechaInicio() { return fechaInicio; }
-    public void setFechaInicio(Date fechaInicio) { this.fechaInicio = fechaInicio; }
-
-    public Character getRespuestaMarcada() { return respuestaMarcada; }
-    public void setRespuestaMarcada(Character respuestaMarcada) { this.respuestaMarcada = respuestaMarcada; }
-
-    public SesionEvaluacion getSesionEvaluacion() { return sesionEvaluacion; }
-    public void setSesionEvaluacion(SesionEvaluacion sesionEvaluacion) { this.sesionEvaluacion = sesionEvaluacion; }
-
-    public Pregunta getPregunta() { return pregunta; }
-    public void setPregunta(Pregunta pregunta) { this.pregunta = pregunta; }
 }

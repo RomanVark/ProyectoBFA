@@ -4,6 +4,10 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+// Importaciones de Lombok
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Test Espacial ? Desplazamiento (subclase de TestAptitud).
  *
@@ -16,6 +20,8 @@ import org.openxava.annotations.*;
 @Table(name = "test_espacial")
 @PrimaryKeyJoinColumn(name = "id_test")
 @View(members = "nombreTest, tipoTest; tiempoLimite; tipoMovimiento; instrucciones; preguntas")
+@Getter // Lombok: Genera los métodos get()
+@Setter // Lombok: Genera los métodos set()
 public class TestEspacial extends TestAptitud {
 
     /**
@@ -26,9 +32,9 @@ public class TestEspacial extends TestAptitud {
     @Required
     private String tipoMovimiento;
 
-
-
     public TestEspacial() {
+        // Estos métodos funcionan perfectamente gracias al @Setter
+        // que le pusimos a la clase padre (TestAptitud)
         setNombreTest("Test Espacial ? Desplazamiento");
         setTipoTest("ESPACIAL");
         setTiempoLimite(300); // 5 minutos según instrucciones
@@ -48,9 +54,4 @@ public class TestEspacial extends TestAptitud {
         return super.calcularPuntajeDirecto(respuestas);
     }
 
-    // ?? Getters & Setters ??????????????????????????????????????
-
-    public String getTipoMovimiento() { return tipoMovimiento; }
-    public void setTipoMovimiento(String tipoMovimiento) { this.tipoMovimiento = tipoMovimiento; }
 }
-
