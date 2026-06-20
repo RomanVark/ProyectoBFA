@@ -1,0 +1,15 @@
+package ni.edu.uam.BFA.run;
+
+import org.openxava.util.*;
+
+/**
+ * Ejecuta esta clase para iniciar un gestor para la base de datos de desarrollo.
+ */
+
+public class DBManager {
+	
+	public static void main(String[] args) {
+		DBServer.runManager();
+	}	
+
+}
