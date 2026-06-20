@@ -43,7 +43,6 @@ public class Sujeto extends Usuario {
 
     /** Un sujeto puede tener múltiples sesiones de evaluación. */
     @OneToMany(mappedBy = "sujeto", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @CollectionView("SesionEvaluacionList")
     private List<SesionEvaluacion> sesiones = new ArrayList<>();
 
 }

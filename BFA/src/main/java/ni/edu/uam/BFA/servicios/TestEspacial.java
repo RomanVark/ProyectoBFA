@@ -54,4 +54,4 @@ public class TestEspacial extends TestAptitud {
         return super.calcularPuntajeDirecto(respuestas);
     }
 
-}
+    }

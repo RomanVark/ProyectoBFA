@@ -39,7 +39,6 @@ public class TestAptitud {
     private String tipoTest;
 
     @OneToMany(mappedBy = "testAptitud", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @CollectionView("PreguntaList")
     private List<Pregunta> preguntas = new ArrayList<>();
 
     // --- Métodos de lógica de negocio (Intactos) ---

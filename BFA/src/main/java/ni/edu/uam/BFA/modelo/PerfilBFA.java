@@ -38,7 +38,6 @@ public class PerfilBFA {
     private SesionEvaluacion sesionEvaluacion;
 
     @OneToMany(mappedBy = "perfilBFA", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @CollectionView("ResultadoFactorList")
     private List<ResultadoFactor> resultados = new ArrayList<>();
 
 }

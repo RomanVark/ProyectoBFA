@@ -32,7 +32,6 @@ public class Psicologo extends Usuario {
      * Un psicólogo administra 0..* sesiones.
      */
     @OneToMany(mappedBy = "psicologo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @CollectionView("SesionEvaluacionList")
     private List<SesionEvaluacion> sesiones = new ArrayList<>();
 
 }

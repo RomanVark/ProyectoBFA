@@ -1,12 +1,12 @@
 ni\edu\uam\BFA\modelo\Psicologo.class
 ni\edu\uam\BFA\modelo\Sujeto.class
-ni\edu\uam\BFA\modelo\ResultadoFactor.class
+ni\edu\uam\BFA\servicios\TestEspacial.class
 ni\edu\uam\BFA\run\BFA.class
+ni\edu\uam\BFA\servicios\RespuestaSujeto.class
 ni\edu\uam\BFA\modelo\Usuario.class
 ni\edu\uam\BFA\modelo\Pregunta.class
-ni\edu\uam\BFA\modelo\TestAptitud.class
-ni\edu\uam\BFA\modelo\TestEspacial.class
+ni\edu\uam\BFA\servicios\ResultadoFactor.class
 ni\edu\uam\BFA\run\DBManager.class
-ni\edu\uam\BFA\modelo\RespuestaSujeto.class
+ni\edu\uam\BFA\servicios\TestAptitud.class
 ni\edu\uam\BFA\modelo\PerfilBFA.class
-ni\edu\uam\BFA\modelo\SesionEvaluacion.class
+ni\edu\uam\BFA\servicios\SesionEvaluacion.class

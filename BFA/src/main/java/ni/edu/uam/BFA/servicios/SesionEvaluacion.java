@@ -70,7 +70,6 @@ public class SesionEvaluacion {
 
     /** Respuestas registradas durante la sesión. */
     @OneToMany(mappedBy = "sesionEvaluacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @CollectionView("RespuestaSujetoList")
     private List<RespuestaSujeto> respuestas = new ArrayList<>();
 
     // --- Métodos de negocio (Intactos) ---
