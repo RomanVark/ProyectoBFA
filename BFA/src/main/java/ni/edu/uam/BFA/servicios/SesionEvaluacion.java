@@ -29,6 +29,7 @@ public class SesionEvaluacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_sesion")
     @Hidden
     private Integer idSesion;
 

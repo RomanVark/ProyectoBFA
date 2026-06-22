@@ -23,9 +23,9 @@ public class ResultadoFactor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_resultado")
     @Hidden
     private Integer idResultado;
-
     @Column(name = "accionimo_factor", nullable = false, length = 50)
     @Required
     private String accionimoFactor;

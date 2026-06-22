@@ -23,6 +23,7 @@ public class RespuestaSujeto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_respuesta")
     @Hidden
     private Integer idRespuesta;
 

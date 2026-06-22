@@ -26,6 +26,7 @@ public class TestAptitud {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_test")
     @Hidden
     private Integer idTest;
 

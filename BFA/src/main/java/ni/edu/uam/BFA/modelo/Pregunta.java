@@ -22,6 +22,7 @@ public class Pregunta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pregunta")
     @Hidden
     private Integer idPregunta;
 

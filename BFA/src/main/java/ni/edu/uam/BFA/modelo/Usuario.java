@@ -7,12 +7,13 @@ import org.openxava.annotations.*;
 
 @MappedSuperclass
 @View(name = "Simple", members = "nombre, correo")
-@Getter // Lombok: Genera getNombre(), getCorreo(), etc.
-@Setter // Lombok: Genera setNombre(), setCorreo(), etc.
+@Getter
+@Setter
 public abstract class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
     @Hidden
     private Integer idUsuario;
 
