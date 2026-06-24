@@ -1,7 +1,4 @@
+node_modules/
 target/
-*.class
-*.war
-*.jar
 .idea/
-*.iml
-.xava/
+*.log

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFA – Administrar credenciales de psicólogos</title>
+<style>
+  :root {
+    --bg: #0F1117; --surface: #1A1D27; --border: #2A2D3E;
+    --accent: #5B8CFF; --accent-lt: #8FB3FF;
+    --ok: #3DDC84; --err: #FF6B6B;
+    --text: #E8ECF5; --muted: #7A7F9A; --radius: 12px;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--sans);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+  }
+  header { width: 100%; max-width: 560px; padding: 28px 24px 0; }
+  header h1 { font-size: 20px; }
+  header p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .card {
+    width: 100%; max-width: 560px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px; margin: 20px 24px;
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 12px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+  }
+  .field select, .field input {
+    width: 100%; padding: 11px 14px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 14px; font-family: var(--sans);
+  }
+  .field select:focus, .field input:focus { outline: none; border-color: var(--accent); }
+  .btn {
+    width: 100%; padding: 12px; border-radius: 8px; border: none;
+    background: var(--accent); color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; margin-top: 8px;
+  }
+  .btn:hover { background: var(--accent-lt); }
+  .status { margin-top: 16px; font-size: 13px; padding: 10px 12px; border-radius: 8px; display: none; }
+  .status.ok  { display: block; background: rgba(61,220,132,.12); color: var(--ok); }
+  .status.err { display: block; background: rgba(255,107,107,.12); color: var(--err); }
+  footer { padding: 24px; color: var(--muted); font-size: 11px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔐 Administrar credenciales de psicólogos</h1>
+  <p>Asigna usuario y contraseña a un psicólogo ya registrado en OpenXava. Esta página es solo para uso interno del equipo — no la compartas con sujetos ni psicólogos finales.</p>
+</header>
+
+<div class="card">
+  <div class="field">
+    <label>Psicólogo</label>
+    <select id="selPsicologo"><option value="">Cargando…</option></select>
+  </div>
+  <div class="field">
+    <label>Nombre de usuario</label>
+    <input type="text" id="inpUsuario" placeholder="ej. jroman">
+  </div>
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" id="inpPassword" placeholder="mínimo 6 caracteres">
+  </div>
+  <button class="btn" onclick="guardarCredenciales()">Guardar credenciales</button>
+  <div class="status" id="status"></div>
+</div>
+
+<footer>Sistema BFA · Panel interno · v1.0</footer>
+
+<script>
+const API_URL = 'http://localhost:3000/api';
+
+async function cargarPsicologos(){
+  const sel = document.getElementById('selPsicologo');
+  try {
+    const resp = await fetch(`${API_URL}/psicologos`);
+    const data = await resp.json();
+    if(!data.length){
+      sel.innerHTML = '<option value="">No hay psicólogos registrados</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">— Selecciona —</option>' +
+      data.map(p => `<option value="${p.id_usuario}">${p.nombre}${p.codigo_colegiado ? ' · ' + p.codigo_colegiado : ''}</option>`).join('');
+  } catch(err){
+    sel.innerHTML = '<option value="">Error al cargar (¿está el servidor corriendo?)</option>';
+  }
+}
+
+async function guardarCredenciales(){
+  const id_usuario = document.getElementById('selPsicologo').value;
+  const nombre_usuario = document.getElementById('inpUsuario').value.trim();
+  const password = document.getElementById('inpPassword').value;
+  const statusEl = document.getElementById('status');
+
+  if(!id_usuario || !nombre_usuario || !password){
+    statusEl.className = 'status err';
+    statusEl.textContent = 'Completa todos los campos.';
+    return;
+  }
+  if(password.length < 6){
+    statusEl.className = 'status err';
+    statusEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+    return;
+  }
+
+  try {
+    const resp = await fetch(`${API_URL}/psicologos/registrar-credenciales`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_usuario: parseInt(id_usuario), nombre_usuario, password })
+    });
+    const data = await resp.json();
+    if(!resp.ok){
+      statusEl.className = 'status err';
+      statusEl.textContent = data.error || 'Error al guardar.';
+      return;
+    }
+    statusEl.className = 'status ok';
+    statusEl.textContent = `✓ Credenciales guardadas para ${data.psicologo.nombre}.`;
+    document.getElementById('inpUsuario').value = '';
+    document.getElementById('inpPassword').value = '';
+  } catch(err){
+    statusEl.className = 'status err';
+    statusEl.textContent = 'No se pudo conectar con el servidor.';
+  }
+}
+
+cargarPsicologos();
+</script>
+</body>
+</html>
