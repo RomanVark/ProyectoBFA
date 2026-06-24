@@ -1,0 +1,106 @@
+-- ════════════════════════════════════════════════════════════
+-- Proyecto BFA (Batería Factorial de Aptitudes)
+-- Script de creación de base de datos PostgreSQL
+-- ════════════════════════════════════════════════════════════
+
+CREATE TABLE sujeto (
+    id_usuario          SERIAL PRIMARY KEY,
+    nombre              VARCHAR(100) NOT NULL,
+    correo              VARCHAR(150) NOT NULL UNIQUE,
+    edad                INTEGER,
+    genero              VARCHAR(20) NOT NULL,
+    profesion           VARCHAR(100),
+    estudios_realizados VARCHAR(200),
+    fecha_nacimiento    DATE
+);
+
+CREATE TABLE psicologo (
+    id_usuario       SERIAL PRIMARY KEY,
+    nombre           VARCHAR(100) NOT NULL,
+    correo           VARCHAR(150) NOT NULL UNIQUE,
+    codigo_colegiado VARCHAR(50) NOT NULL UNIQUE,
+    especialidad     VARCHAR(100),
+    nombre_usuario   VARCHAR(50) UNIQUE,
+    password_hash    VARCHAR(255)
+);
+
+CREATE TABLE test_aptitud (
+    id_test       SERIAL PRIMARY KEY,
+    nombre_test   VARCHAR(100) NOT NULL,
+    instrucciones VARCHAR(500),
+    tiempo_limite INTEGER,
+    tipo_test     VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE test_espacial (
+    id_test         INTEGER PRIMARY KEY REFERENCES test_aptitud(id_test),
+    tipo_movimiento VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE pregunta (
+    id_pregunta        SERIAL PRIMARY KEY,
+    enunciado          VARCHAR(500) NOT NULL,
+    numero_pregunta    INTEGER NOT NULL,
+    respuesta_correcta VARCHAR(10) NOT NULL,
+    tipo_pregunta      VARCHAR(50) NOT NULL,
+    id_test            INTEGER NOT NULL REFERENCES test_aptitud(id_test)
+);
+
+CREATE TABLE sesion_evaluacion (
+    id_sesion    SERIAL PRIMARY KEY,
+    estado       VARCHAR(30) NOT NULL,
+    fecha_inicio TIMESTAMP,
+    fecha_fin    TIMESTAMP,
+    finalidad    VARCHAR(255),
+    id_psicologo INTEGER NOT NULL REFERENCES psicologo(id_usuario),
+    id_sujeto    INTEGER NOT NULL REFERENCES sujeto(id_usuario)
+);
+
+CREATE TABLE respuesta_sujeto (
+    id_respuesta      SERIAL PRIMARY KEY,
+    es_correcta       BOOLEAN NOT NULL DEFAULT FALSE,
+    estado            VARCHAR(30) NOT NULL,
+    fecha_inicio      TIMESTAMP,
+    respuesta_marcada VARCHAR(10),
+    id_sesion         INTEGER NOT NULL REFERENCES sesion_evaluacion(id_sesion),
+    id_pregunta       INTEGER NOT NULL REFERENCES pregunta(id_pregunta)
+);
+
+CREATE TABLE perfil_bfa (
+    idperfil         SERIAL PRIMARY KEY,
+    id_sesion        INTEGER NOT NULL UNIQUE REFERENCES sesion_evaluacion(id_sesion),
+    fecha_generacion TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE resultado_factor (
+    idresultado       SERIAL PRIMARY KEY,
+    accionimo_factor  VARCHAR(50) NOT NULL,
+    puntaje_directo   INTEGER,
+    percentil         INTEGER,
+    puntuacion_tipica INTEGER,
+    id_perfil         INTEGER NOT NULL REFERENCES perfil_bfa(idperfil)
+);
+
+CREATE TABLE resultado_test (
+    id_resultado      SERIAL PRIMARY KEY,
+    id_sesion         INTEGER NOT NULL REFERENCES sesion_evaluacion(id_sesion),
+    puntaje_directo   INTEGER,
+    total_correctas   INTEGER,
+    total_incorrectas INTEGER,
+    total_omitidas    INTEGER,
+    tiempo_segundos   INTEGER,
+    percentil         INTEGER,
+    puntuacion_tipica INTEGER,
+    fecha_generacion  TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO psicologo (nombre, correo, codigo_colegiado, especialidad)
+VALUES ('Sistema - Autoadministrado', 'sistema@bfa.local', 'AUTOADM-001', 'N/A')
+RETURNING id_usuario;
+
+INSERT INTO test_aptitud (nombre_test, instrucciones, tiempo_limite, tipo_test)
+VALUES ('Test Espacial – Desplazamiento', 'Selecciona la(s) figura(s) que coincide(n) con el modelo.', 300, 'ESPACIAL')
+RETURNING id_test;
+
+INSERT INTO test_espacial (id_test, tipo_movimiento)
+VALUES (1, 'DESPLAZAMIENTO');
